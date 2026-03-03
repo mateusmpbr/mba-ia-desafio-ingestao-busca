@@ -25,7 +25,7 @@ Após o `setup.sh` será gerado o arquivo `.env`. Preencha pelo menos uma das ch
 - `OPENAI_API_KEY` — usa modelos e embeddings da OpenAI
 - `GOOGLE_API_KEY` — usa modelos e embeddings do Google (Gemini)
 
-Regras de seleção de modelo
+Regras de seleção de modelo:
 
 - Se `GOOGLE_API_KEY` estiver preenchido, o código usa embeddings/LLM do Google.
 - Se `GOOGLE_API_KEY` não estiver preenchido, mas `OPENAI_API_KEY` estiver, o código usa OpenAI.
@@ -64,7 +64,7 @@ python src/chat.py
 
 No CLI digite sua pergunta e pressione Enter. Digite `sair` para encerrar.
 
-Observação importante sobre coleções
+Observação importante sobre coleções:
 
 Se você executar ingestão com o modelo do Google e depois quiser executar com OpenAI, altere `PG_VECTOR_COLLECTION_NAME` no `.env` para um nome diferente antes de rodar a ingestão novamente. Isso evita misturar vetores embeddados por modelos diferentes na mesma coleção.
 
