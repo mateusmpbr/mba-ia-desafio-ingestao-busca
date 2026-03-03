@@ -76,13 +76,11 @@ def search_prompt(question=None):
 
   contexto = "\n\n---\n\n".join(contexto_parts)
 
-  prompt = PROMPT_TEMPLATE.format(contexto=contexto, pergunta=question)
-
-  # If no context, follow the instructions and return the fallback message
   if not contexto.strip():
     return "Não tenho informações necessárias para responder sua pergunta."
 
-  # Call LLM to answer using only the provided prompt
+  prompt = PROMPT_TEMPLATE.format(contexto=contexto, pergunta=question)
+
   if use_google:
     llm = GoogleGenerativeAI(model=os.getenv("GOOGLE_RESPONSE_MODEL") or "gemini-2.5-flash-lite", temperature=0)
   else:
