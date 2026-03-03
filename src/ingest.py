@@ -18,12 +18,12 @@ def ingest_pdf():
     pdf_path = Path(pdf_path)
 
     if not pdf_path.exists():
-        raise RuntimeError(f"PDF not found at {pdf_path}")
+        raise RuntimeError(f"PDF não encontrado em {pdf_path}")
 
     db_url = os.getenv("DATABASE_URL")
 
     if not db_url:
-        raise RuntimeError("Database connection URL not set. Set DATABASE_URL or PGVECTOR_URL in .env")
+        raise RuntimeError("URL de conexão com o banco de dados não definida. Configure DATABASE_URL no .env")
 
     collection = os.getenv("PG_VECTOR_COLLECTION_NAME") or "documents"
 
@@ -33,7 +33,7 @@ def ingest_pdf():
     splits = splitter.split_documents(docs)
 
     if not splits:
-        print("No document splits produced. Nothing to ingest.")
+        print("Nenhum chunk foi gerado a partir do documento. Nada a ingerir.")
         return
 
     enriched = [
@@ -44,13 +44,13 @@ def ingest_pdf():
         for d in splits
     ]
 
-    ids = [f"doc-{i}" for i in range(len(enriched))]
+    ids = [f"doc-{i}-{collection}" for i in range(len(enriched))]
 
     googleApiKey = os.getenv("GOOGLE_API_KEY")
     openaiApiKey = os.getenv("OPENAI_API_KEY")
 
     if(not googleApiKey and not openaiApiKey):
-        raise RuntimeError("API key not found. Set OPENAI_API_KEY or GOOGLE_API_KEY in .env")
+        raise RuntimeError("Chave de API não encontrada. Configure OPENAI_API_KEY ou GOOGLE_API_KEY no .env")
 
     use_google = bool(googleApiKey)
 
@@ -67,7 +67,7 @@ def ingest_pdf():
     )
 
     store.add_documents(documents=enriched, ids=ids)
-    print(f"Ingested {len(enriched)} chunks into collection '{collection}'")
+    print(f"Ingeridos {len(enriched)} chunks na coleção '{collection}'")
 
 
 if __name__ == "__main__":

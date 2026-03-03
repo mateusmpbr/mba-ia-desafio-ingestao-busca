@@ -42,7 +42,7 @@ def search_prompt(question=None):
   db_url = os.getenv("DATABASE_URL")
 
   if not db_url:
-    raise RuntimeError("Database connection URL not set. Set DATABASE_URL or PGVECTOR_URL in .env")
+    raise RuntimeError("URL de conexão com o banco de dados não definida. Configure DATABASE_URL no .env")
 
   collection = os.getenv("PG_VECTOR_COLLECTION_NAME") or "documents"
 
@@ -50,7 +50,7 @@ def search_prompt(question=None):
   openaiApiKey = os.getenv("OPENAI_API_KEY")
 
   if(not googleApiKey and not openaiApiKey):
-      raise RuntimeError("API key not found. Set OPENAI_API_KEY or GOOGLE_API_KEY in .env")
+    raise RuntimeError("Chave de API não encontrada. Configure OPENAI_API_KEY ou GOOGLE_API_KEY no .env")
 
   use_google = bool(googleApiKey)
 
