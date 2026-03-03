@@ -68,7 +68,7 @@ Observação importante sobre coleções
 
 Se você executar ingestão com o modelo do Google e depois quiser executar com OpenAI, altere `PG_VECTOR_COLLECTION_NAME` no `.env` para um nome diferente antes de rodar a ingestão novamente. Isso evita misturar vetores embeddados por modelos diferentes na mesma coleção.
 
-Variáveis úteis no `.env`
+## Variáveis úteis no `.env`
 
 - `DATABASE_URL` ou `PGVECTOR_URL`: string de conexão com o Postgres (ex.: `postgresql://postgres:postgres@localhost:5432/rag`)
 - `PDF_PATH`: caminho para o PDF a ser ingerido (padrão `document.pdf`)
