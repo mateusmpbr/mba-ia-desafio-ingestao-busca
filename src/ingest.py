@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_core.documents import Document
 from langchain_postgres import PGVector
 
@@ -45,7 +46,18 @@ def ingest_pdf():
 
     ids = [f"doc-{i}" for i in range(len(enriched))]
 
-    embeddings = OpenAIEmbeddings(model=os.getenv("OPENAI_EMBEDDING_MODEL") or "text-embedding-3-small")
+    googleApiKey = os.getenv("GOOGLE_API_KEY")
+    openaiApiKey = os.getenv("OPENAI_API_KEY")
+
+    if(not googleApiKey and not openaiApiKey):
+        raise RuntimeError("API key not found. Set OPENAI_API_KEY or GOOGLE_API_KEY in .env")
+
+    use_google = bool(googleApiKey)
+
+    if use_google:
+        embeddings = GoogleGenerativeAIEmbeddings(model=os.getenv("GOOGLE_EMBEDDING_MODEL") or "models/gemini-embedding-001")
+    else:
+        embeddings = OpenAIEmbeddings(model=os.getenv("OPENAI_EMBEDDING_MODEL") or "text-embedding-3-small")
 
     store = PGVector(
         embeddings=embeddings,

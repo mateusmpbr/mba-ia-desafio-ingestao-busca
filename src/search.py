@@ -28,8 +28,10 @@ RESPONDA A "PERGUNTA DO USUÁRIO"
 def search_prompt(question=None):
   import os
   from dotenv import load_dotenv
-  from langchain_openai import OpenAI
+  from langchain_openai import ChatOpenAI
   from langchain_openai import OpenAIEmbeddings
+  from langchain_google_genai import GoogleGenerativeAI
+  from langchain_google_genai import GoogleGenerativeAIEmbeddings
   from langchain_postgres import PGVector
 
   load_dotenv()
@@ -44,7 +46,18 @@ def search_prompt(question=None):
 
   collection = os.getenv("PG_VECTOR_COLLECTION_NAME") or "documents"
 
-  embeddings = OpenAIEmbeddings(model=os.getenv("OPENAI_EMBEDDING_MODEL") or "text-embedding-3-small")
+  googleApiKey = os.getenv("GOOGLE_API_KEY")
+  openaiApiKey = os.getenv("OPENAI_API_KEY")
+
+  if(not googleApiKey and not openaiApiKey):
+      raise RuntimeError("API key not found. Set OPENAI_API_KEY or GOOGLE_API_KEY in .env")
+
+  use_google = bool(googleApiKey)
+
+  if use_google:
+    embeddings = GoogleGenerativeAIEmbeddings(model=os.getenv("GOOGLE_EMBEDDING_MODEL") or "models/gemini-embedding-001")
+  else:
+    embeddings = OpenAIEmbeddings(model=os.getenv("OPENAI_EMBEDDING_MODEL") or "text-embedding-3-small")
 
   store = PGVector(
     embeddings=embeddings,
@@ -70,9 +83,12 @@ def search_prompt(question=None):
     return "Não tenho informações necessárias para responder sua pergunta."
 
   # Call LLM to answer using only the provided prompt
-  llm = OpenAI(model=os.getenv("OPENAI_RESPONSE_MODEL") or "gpt-5-nano", temperature=0)
+  if use_google:
+    llm = GoogleGenerativeAI(model=os.getenv("GOOGLE_RESPONSE_MODEL") or "gemini-2.5-flash-lite", temperature=0)
+  else:
+    llm = ChatOpenAI(model=os.getenv("OPENAI_RESPONSE_MODEL") or "gpt-5-nano", temperature=0)
 
-  response = llm(prompt)
+  response = llm.invoke(prompt)
 
   # OpenAI client returns an object; try to extract text
   if isinstance(response, str):
