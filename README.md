@@ -70,7 +70,7 @@ Se você executar ingestão com o modelo do Google e depois quiser executar com 
 
 ## Variáveis úteis no `.env`
 
-- `DATABASE_URL` ou `PGVECTOR_URL`: string de conexão com o Postgres (ex.: `postgresql://postgres:postgres@localhost:5432/rag`)
+- `DATABASE_URL`: string de conexão com o Postgres (ex.: `postgresql://postgres:postgres@localhost:5432/rag`)
 - `PDF_PATH`: caminho para o PDF a ser ingerido (padrão `document.pdf`)
 - `PG_VECTOR_COLLECTION_NAME`: nome da coleção no pgVector (padrão `documents`)
 - `OPENAI_EMBEDDING_MODEL`, `OPENAI_RESPONSE_MODEL` — modelos OpenAI
